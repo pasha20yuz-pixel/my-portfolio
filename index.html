@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vanguard - Premium Digital, Editorial & AI Art Portfolio</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#040406',
+                        darksurface: '#0e0d16',
+                        accentviolet: '#7c3aed',
+                        accentgreen: '#10b981',
+                        borderglass: 'rgba(255, 255, 255, 0.05)',
+                    },
+                    fontFamily: {
+                        editorial: ['Playfair Display', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #040406;
+            color: #9ca3af;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Интерактивный кастомный курсор */
+        .custom-cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #7c3aed;
+            border-radius: 50%;
+            position: fixed;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 9999;
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+        .custom-cursor-dot {
+            width: 4px;
+            height: 4px;
+            background-color: #10b981;
+            border-radius: 50%;
+            position: fixed;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Светящиеся фоновые градиенты */
+        .glow-sphere-1 {
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, transparent 70%);
+        }
+        .glow-sphere-2 {
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, transparent 70%);
+        }
+
+        /* Кастомный скроллбар */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #040406; }
+        ::-webkit-scrollbar-thumb { background: #1f1e2e; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #7c3aed; }
+
+        /* Эффект шума для журнальной эстетики */
+        .grain-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            opacity: 0.02; pointer-events: none; z-index: 999;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Анимация бегущей строки (Marquee) */
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: flex;
+            width: max-content;
+            animation: marquee 25s linear infinite;
+        }
+
+        /* Скролл-анимация появления */
+        .reveal-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-item.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Интерактивный аккордеон процесса */
+        .process-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, opacity 0.3s ease-in;
+            opacity: 0;
+        }
+        .process-item.active .process-content {
+            max-height: 200px;
+            opacity: 1;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen">
+
+    <div class="grain-overlay"></div>
+
+    <!-- Курсор (скрыт на мобильных для удобства тача) -->
+    <div class="custom-cursor hidden md:block" id="customCursor"></div>
+    <div class="custom-cursor-dot hidden md:block" id="customCursorDot"></div>
+
+    <!-- Декоративный свет -->
+    <div class="absolute top-[5%] -right-[10%] w-[600px] h-[600px] glow-sphere-1 pointer-events-none z-0"></div>
+    <div class="absolute top-[50%] -left-[10%] w-[600px] h-[600px] glow-sphere-2 pointer-events-none z-0"></div>
+
+    <!-- Шапка сайта -->
+    <header class="fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b border-transparent" id="siteHeader">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="#" class="font-editorial text-2xl font-bold tracking-wider text-white hover:text-accentviolet transition-colors">
+                Vanguard<span class="text-accentgreen">.</span>
+            </a>
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-semibold tracking-wide uppercase">
+                <a href="#work" class="text-white hover:text-accentviolet transition-colors">Работы</a>
+                <a href="#process" class="text-gray-400 hover:text-white transition-colors">Процесс</a>
+                <a href="#about" class="text-gray-400 hover:text-white transition-colors">Философия</a>
+                <a href="#contact" class="text-gray-400 hover:text-white transition-colors">Контакты</a>
+            </nav>
+            <a href="#contact" class="px-5 py-2.5 bg-gradient-to-r from-accentviolet to-indigo-600 text-white rounded-full text-xs font-semibold uppercase tracking-wider shadow-lg transition-all transform hover:-translate-y-0.5">
+                Обсудить проект
+            </a>
+        </div>
+    </header>
+
+    <!-- Главный экран -->
+    <section class="min-h-screen flex items-center justify-center pt-24 px-6 relative z-10">
+        <div class="max-w-5xl mx-auto text-center">
+            <span class="font-editorial italic text-lg text-accentgreen tracking-widest block mb-4 animate-pulse">
+                DIGITAL CREATIVE INSPIRATION
+            </span>
+            <h1 class="font-editorial text-5xl md:text-8xl text-white font-bold leading-tight mb-8">
+                Эстетика Нового<br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-accentviolet via-purple-400 to-accentgreen">
+                    Цифрового Поколения
+                </span>
+            </h1>
+            <p class="max-w-2xl mx-auto text-gray-400 text-base md:text-lg mb-12 leading-relaxed">
+                Интерактивное портфолио на стыке брутализма, премиальной журнальной вёрстки и генеративных концепт-артов. Исследуйте чистый визуальный опыт.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="#work" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-accentviolet to-indigo-600 text-white rounded-full font-bold text-sm tracking-wider uppercase shadow-xl hover:shadow-accentviolet/40 transition-all hover:-translate-y-1">
+                    Смотреть работы <i class="fa-solid fa-arrow-down ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- НОВЫЙ ЭЛЕМЕНТ: Кинетическая бегущая строка (Marquee) -->
+    <div class="w-full overflow-hidden bg-darksurface border-y border-borderglass py-6 relative z-20 select-none">
+        <div class="animate-marquee whitespace-nowrap flex gap-12 text-white font-editorial font-bold text-3xl md:text-5xl tracking-widest uppercase italic">
+            <span>✦ Premium Editorial Layout ✦ Next-Gen AI Art ✦ UI/UX Engineering ✦ Neo-Brutalism Grid </span>
+            <span>✦ Premium Editorial Layout ✦ Next-Gen AI Art ✦ UI/UX Engineering ✦ Neo-Brutalism Grid </span>
+        </div>
+    </div>
+
+    <!-- Секция Портфолио -->
+    <section id="work" class="py-24 px-6 relative z-10 max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
+            <div>
+                <span class="text-accentviolet font-semibold tracking-widest uppercase text-xs">ГАЛЕРЕЯ ШЕДЕВРОВ</span>
+                <h2 class="font-editorial text-4xl md:text-5xl text-white font-bold mt-2">Экспозиция Проектов</h2>
+            </div>
+            <div class="flex flex-wrap gap-2 bg-darksurface/80 border border-borderglass p-1.5 rounded-full backdrop-blur">
+                <button onclick="filterPortfolio('all')" class="portfolio-filter-btn px-6 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider text-white bg-accentviolet transition-all" data-filter="all">Все</button>
+                <button onclick="filterPortfolio('editorial')" class="portfolio-filter-btn px-6 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider text-gray-400 hover:text-white transition-all" data-filter="editorial">Редакция</button>
+                <button onclick="filterPortfolio('ai-art')" class="portfolio-filter-btn px-6 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider text-gray-400 hover:text-white transition-all" data-filter="ai-art">AI Арт</button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="portfolioGrid">
+            <!-- Карточка 1 -->
+            <div class="portfolio-card reveal-item active group" data-category="editorial">
+                <div class="relative overflow-hidden rounded-2xl border border-borderglass bg-darksurface p-4 transition-all duration-300 hover:border-accentviolet/40 hover:shadow-2xl hover:shadow-purple-950/20">
+                    <div class="relative aspect-[3/4] rounded-xl overflow-hidden mb-5">
+                        <img src="http://googleusercontent.com/image_collection/image_retrieval/17310530647632895426_0" alt="Avant-Garde" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 flex items-end p-6 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button onclick="openLightbox('editorial-1')" class="px-5 py-2.5 bg-white text-black font-bold text-xs rounded-full uppercase tracking-widest">Смотреть Кейс</button>
+                        </div>
+                    </div>
+                    <span class="text-accentviolet font-bold text-xs uppercase tracking-wider">Editorial Layout</span>
+                    <h3 class="font-editorial text-xl text-white font-bold mt-1">The Avant-Garde Cover</h3>
+                </div>
+            </div>
+            <!-- Карточка 2 -->
+            <div class="portfolio-card reveal-item active group" data-category="ai-art">
+                <div class="relative overflow-hidden rounded-2xl border border-borderglass bg-darksurface p-4 transition-all duration-300 hover:border-accentviolet/40 hover:shadow-2xl hover:shadow-purple-950/20">
+                    <div class="relative aspect-[3/4] rounded-xl overflow-hidden mb-5">
+                        <img src="http://googleusercontent.com/image_collection/image_retrieval/7696230796973069564_0" alt="Cyber" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 flex items-end p-6 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button onclick="openLightbox('ai-1')" class="px-5 py-2.5 bg-white text-black font-bold text-xs rounded-full uppercase tracking-widest">Смотреть Кейс</button>
+                        </div>
+                    </div>
+                    <span class="text-accentgreen font-bold text-xs uppercase tracking-wider">AI Generation</span>
+                    <h3 class="font-editorial text-xl text-white font-bold mt-1">Cyberpunk Portrait</h3>
+                </div>
+            </div>
+            <!-- Карточка 3 -->
+            <div class="portfolio-card reveal-item active group" data-category="ai-art">
+                <div class="relative overflow-hidden rounded-2xl border border-borderglass bg-darksurface p-4 transition-all duration-300 hover:border-accentviolet/40 hover:shadow-2xl hover:shadow-purple-950/20">
+                    <div class="relative aspect-[3/4] rounded-xl overflow-hidden mb-5">
+                        <img src="http://googleusercontent.com/image_collection/image_retrieval/7696230796973069564_1" alt="Ethereal" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 flex items-end p-6 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button onclick="openLightbox('ai-2')" class="px-5 py-2.5 bg-white text-black font-bold text-xs rounded-full uppercase tracking-widest">Смотреть Кейс</button>
+                        </div>
+                    </div>
+                    <span class="text-accentgreen font-bold text-xs uppercase tracking-wider">AI Generation</span>
+                    <h3 class="font-editorial text-xl text-white font-bold mt-1">Ethereal Future</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- НОВЫЙ ЭЛЕМЕНТ: Интерактивный процесс создания (Аккордеон) -->
+    <section id="process" class="py-24 px-6 bg-darksurface/40 border-y border-borderglass relative z-10">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="text-accentgreen font-semibold tracking-widest uppercase text-xs">РЕМЕСЛО И ЛОГИКА</span>
+                <h2 class="font-editorial text-4xl md:text-5xl text-white font-bold mt-2">Как рождаются концепты</h2>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Шаг 1 -->
+                <div class="process-item active bg-darkbg border border-borderglass rounded-2xl p-6 cursor-pointer transition-all hover:border-accentviolet/30" onclick="toggleProcess(this)">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <span class="font-editorial text-2xl text-accentviolet font-bold">01/</span>
+                            <h3 class="text-white font-bold text-lg md:text-xl">Глубокий Анализ и Бриф</h3>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-gray-500 transition-transform duration-300"></i>
+                    </div>
+                    <div class="process-content text-sm text-gray-400 leading-relaxed">
+                        Погружаемся в ДНК вашего бренда. Изучаем референсы, выстраиваем геометрию сетки будущего сайта, определяем ключевые эмоции, которые должен транслировать визуал.
+                    </div>
+                </div>
+                <!-- Шаг 2 -->
+                <div class="process-item bg-darkbg border border-borderglass rounded-2xl p-6 cursor-pointer transition-all hover:border-accentviolet/30" onclick="toggleProcess(this)">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <span class="font-editorial text-2xl text-accentgreen font-bold">02/</span>
+                            <h3 class="text-white font-bold text-lg md:text-xl">Нейросетевой Пре-продакшн</h3>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-gray-500 transition-transform duration-300"></i>
+                    </div>
+                    <div class="process-content text-sm text-gray-400 leading-relaxed">
+                        Генерируем уникальные художественные ассеты с помощью передовых AI-моделей. Подбираем эксклюзивную цветовую гамму, которая не используется в шаблонных решениях конкурентов.
+                    </div>
+                </div>
+                <!-- Шаг 3 -->
+                <div class="process-item bg-darkbg border border-borderglass rounded-2xl p-6 cursor-pointer transition-all hover:border-accentviolet/30" onclick="toggleProcess(this)">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <span class="font-editorial text-2xl text-purple-400 font-bold">03/</span>
+                            <h3 class="text-white font-bold text-lg md:text-xl">Интерактивная Вёрстка</h3>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-gray-500 transition-transform duration-300"></i>
+                    </div>
+                    <div class="process-content text-sm text-gray-400 leading-relaxed">
+                        Превращаем макет в живой код. Настраиваем плавный кинетический скролл, интерактивные hover-эффекты кнопок, кастомный курсор и адаптивность под экраны любых смартфонов.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция Философии с MathML формулой -->
+    <section id="about" class="py-24 px-6 relative z-10 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div class="space-y-6">
+                <span class="text-accentviolet font-semibold tracking-widest uppercase text-xs">ЗОЛОТОЕ СЕЧЕНИЕ</span>
+                <h2 class="font-editorial text-4xl font-bold text-white">Пропорции, высеченные временем</h2>
+                <p class="text-gray-400 leading-relaxed">Каждый отступ и медиа-блок на сайте рассчитываются по правилам математической гармонии Ренессанса, создавая естественный баланс.</p>
+                <div class="bg-darksurface p-6 rounded-2xl border border-borderglass flex items-center gap-6">
+                    <div class="bg-darkbg p-4 rounded-xl border border-white/5">
+                        <math display="block" class="text-accentgreen text-2xl">
+                            <mi>Φ</mi><mo>=</mo><mfrac><mrow><mn>1</mn><mo>+</mo><msqrt><mn>5</mn></msqrt></mrow><mn>2</mn></mfrac><mo>≈</mo><mn>1.618</mn>
+                        </math>
+                    </div>
+                    <p class="text-xs text-gray-400">Формула гармонии визуального веса контента.</p>
+                </div>
+            </div>
+            <div class="bg-darksurface p-8 rounded-3xl border border-borderglass">
+                <h3 class="font-editorial text-xl text-white font-bold mb-6">Интерактивный стек</h3>
+                <div class="space-y-4 text-sm">
+                    <div class="flex items-center gap-3"><i class="fa-solid fa-bolt text-accentviolet"></i> <span>OLED Темная палитра</span></div>
+                    <div class="flex items-center gap-3"><i class="fa-solid fa-mobile-button text-accentgreen"></i> <span>Полный Mobile-First адаптив</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Форма Контактов -->
+    <section id="contact" class="py-24 px-6 relative z-10 max-w-3xl mx-auto">
+        <div class="bg-darksurface border border-borderglass p-8 md:p-12 rounded-3xl relative overflow-hidden">
+            <h3 class="font-editorial text-3xl text-white font-bold mb-6 text-center">Создать шедевр вместе</h3>
+            <form onsubmit="handleFormSubmit(event)" class="space-y-6">
+                <input type="text" id="name" required class="w-full bg-darkbg border border-borderglass focus:border-accentviolet rounded-xl px-4 py-3.5 text-white text-sm outline-none transition-all" placeholder="Ваше имя">
+                <input type="email" id="email" required class="w-full bg-darkbg border border-borderglass focus:border-accentviolet rounded-xl px-4 py-3.5 text-white text-sm outline-none transition-all" placeholder="Ваш E-mail">
+                <textarea id="message" required rows="4" class="w-full bg-darkbg border border-borderglass focus:border-accentviolet rounded-xl px-4 py-3.5 text-white text-sm outline-none transition-all" placeholder="Опишите идею..."></textarea>
+                <button type="submit" class="w-full py-4 bg-gradient-to-r from-accentviolet to-indigo-600 text-white rounded-xl text-sm font-bold uppercase tracking-widest shadow-lg transition-all transform hover:-translate-y-0.5">Отправить концепт-заявку</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Лайтбокс -->
+    <div id="lightboxModal" class="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
+        <button onclick="closeLightbox()" class="absolute top-6 right-6 text-white text-3xl hover:text-accentviolet"><i class="fa-solid fa-times"></i></button>
+        <div class="bg-darksurface border border-borderglass max-w-4xl w-full rounded-3xl overflow-hidden grid grid-cols-1 lg:grid-cols-2 max-h-[90vh]">
+            <div class="bg-darkbg p-4 flex items-center justify-center"><img id="lightboxImg" src="" class="max-h-[40vh] lg:max-h-[60vh] object-contain"></div>
+            <div class="p-8 flex flex-col justify-between">
+                <div>
+                    <span id="lightboxTag" class="text-xs font-bold text-accentgreen uppercase"></span>
+                    <h3 id="lightboxTitle" class="font-editorial text-2xl text-white font-bold mt-2"></h3>
+                    <p id="lightboxDesc" class="text-sm text-gray-400 mt-4 leading-relaxed"></p>
+                </div>
+                <button onclick="closeLightbox()" class="mt-6 py-3 bg-white/5 border border-borderglass text-xs uppercase text-white rounded-full">Закрыть окно</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Скрипты -->
+    <script>
+        const projectsData = {
+            'editorial-1': { title: 'The Avant-Garde Cover', tag: 'Editorial Layout', img: 'http://googleusercontent.com/image_collection/image_retrieval/17310530647632895426_0', desc: 'Концептуальная верстка журналов премиум-класса с использованием швейцарской школы сетки и обилия свободного пространства.' },
+            'ai-1': { title: 'Cyberpunk Portrait', tag: 'AI Generation', img: 'http://googleusercontent.com/image_collection/image_retrieval/7696230796973069564_0', desc: 'Сложный генеративный арт на стыке кибернетики и неонового импрессионизма с последующей цветокоррекцией в Photoshop.' },
+            'ai-2': { title: 'Ethereal Future', tag: 'AI Generation', img: 'http://googleusercontent.com/image_collection/image_retrieval/7696230796973069564_1', desc: 'Фантастические пейзажи и архитектура будущего, сгенерированные для использования в качестве обложек музыкальных альбомов.' }
+        };
+
+        // Курсор
+        const cursor = document.getElementById('customCursor');
+        const cursorDot = document.getElementById('customCursorDot');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px';
+            cursorDot.style.left = e.clientX + 'px'; cursorDot.style.top = e.clientY + 'px';
+        });
+
+        // Навигация
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('siteHeader');
+            if (window.scrollY > 50) header.classList.add('bg-darkbg/90', 'backdrop-blur-md', 'border-borderglass', 'h-16');
+            else header.classList.remove('bg-darkbg/90', 'backdrop-blur-md', 'border-borderglass', 'h-16');
+        });
+
+        // Аккордеон Процесса
+        function toggleProcess(element) {
+            const items = document.querySelectorAll('.process-item');
+            const isActive = element.classList.contains('active');
+            
+            items.forEach(item => {
+                item.classList.remove('active');
+                item.querySelector('i').classList.remove('rotate-180');
+            });
+
+            if (!isActive) {
+                element.classList.add('active');
+                element.querySelector('i').classList.add('rotate-180');
+            }
+        }
+
+        // Фильтр
+        function filterPortfolio(category) {
+            const buttons = document.querySelectorAll('.portfolio-filter-btn');
+            buttons.forEach(btn => btn.getAttribute('data-filter') === category ? btn.classList.add('bg-accentviolet', 'text-white') : btn.classList.remove('bg-accentviolet', 'text-white'));
+
+            const cards = document.querySelectorAll('.portfolio-card');
+            cards.forEach(card => {
+                if (category === 'all' || card.getAttribute('data-category') === category) {
+                    card.style.display = 'block';
+                    setTimeout(() => { card.style.opacity = '1'; card.style.transform = 'scale(1)'; }, 50);
+                } else {
+                    card.style.opacity = '0'; card.style.transform = 'scale(0.95)';
+                    setTimeout(() => card.style.display = 'none', 300);
+                }
+            });
+        }
+
+        // Лайтбокс
+        function openLightbox(id) {
+            const data = projectsData[id]; if (!data) return;
+            document.getElementById('lightboxImg').src = data.img;
+            document.getElementById('lightboxTag').innerText = data.tag;
+            document.getElementById('lightboxTitle').innerText = data.title;
+            document.getElementById('lightboxDesc').innerText = data.desc;
+            const modal = document.getElementById('lightboxModal');
+            modal.classList.remove('opacity-0', 'pointer-events-none'); document.body.style.overflow = 'hidden';
+        }
+        function closeLightbox() {
+            const modal = document.getElementById('lightboxModal');
+            modal.classList.add('opacity-0', 'pointer-events-none'); document.body.style.overflow = '';
+        }
+        function handleFormSubmit(e) { e.preventDefault(); alert('Концепт отправлен успешно! (Симуляция)'); }
+    </script>
+</body>
+</html>
