@@ -124,6 +124,9 @@
 
     <div class="grain-overlay"></div>
 
+    <!-- НОВЫЙ ЭЛЕМЕНТ: Индикатор прогресса чтения страницы -->
+    <div id="scrollProgress" class="fixed top-0 left-0 h-[3px] bg-gradient-to-r from-accentviolet via-purple-500 to-accentgreen w-0 z-[100] transition-all duration-75"></div>
+
     <!-- Курсор (скрыт на мобильных для удобства тача) -->
     <div class="custom-cursor hidden md:block" id="customCursor"></div>
     <div class="custom-cursor-dot hidden md:block" id="customCursorDot"></div>
@@ -141,8 +144,8 @@
             <nav class="hidden md:flex items-center space-x-8 text-sm font-semibold tracking-wide uppercase">
                 <a href="#work" class="text-white hover:text-accentviolet transition-colors">Работы</a>
                 <a href="#process" class="text-gray-400 hover:text-white transition-colors">Процесс</a>
+                <a href="#insights" class="text-gray-400 hover:text-white transition-colors">Инсайты</a>
                 <a href="#about" class="text-gray-400 hover:text-white transition-colors">Философия</a>
-                <a href="#contact" class="text-gray-400 hover:text-white transition-colors">Контакты</a>
             </nav>
             <a href="#contact" class="px-5 py-2.5 bg-gradient-to-r from-accentviolet to-indigo-600 text-white rounded-full text-xs font-semibold uppercase tracking-wider shadow-lg transition-all transform hover:-translate-y-0.5">
                 Обсудить проект
@@ -290,6 +293,74 @@
         </div>
     </section>
 
+    <!-- НОВЫЙ ЭЛЕМЕНТ: Секция Живых Инсайтов (Bento Grid) -->
+    <section id="insights" class="py-24 px-6 max-w-7xl mx-auto relative z-10">
+        <div class="text-center mb-16">
+            <span class="text-accentviolet font-semibold tracking-widest uppercase text-xs">МЕТРИКИ И ПУЛЬС</span>
+            <h2 class="font-editorial text-4xl md:text-5xl text-white font-bold mt-2">Студия в реальном времени</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Карточка 1: Живой статус -->
+            <div class="bg-darksurface border border-borderglass p-8 rounded-3xl flex flex-col justify-between group hover:border-accentgreen/30 transition-all duration-300">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-bold tracking-widest text-gray-500 uppercase">СТАТУС ЗАГРУЗКИ</span>
+                    <span class="flex h-3 w-3 relative">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accentgreen opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-accentgreen"></span>
+                    </span>
+                </div>
+                <div class="mt-12">
+                    <h4 class="font-editorial text-2xl text-white font-bold mb-2">Доступен для проектов</h4>
+                    <p class="text-xs text-gray-400 leading-relaxed">Сейчас отличное время, чтобы запустить революционный цифровой продукт или премиальное медиа.</p>
+                </div>
+            </div>
+
+            <!-- Карточка 2: Интерактивные Живые Часы -->
+            <div class="bg-darksurface border border-borderglass p-8 rounded-3xl flex flex-col justify-between group hover:border-accentviolet/30 transition-all duration-300">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-bold tracking-widest text-gray-500 uppercase">МЕСТНОЕ ВРЕМЯ</span>
+                    <i class="fa-regular fa-clock text-accentviolet text-lg"></i>
+                </div>
+                <div class="mt-12">
+                    <div id="liveClock" class="font-editorial text-4xl md:text-5xl text-white font-bold tracking-wider mb-2">00:00:00</div>
+                    <p class="text-xs text-gray-400 leading-relaxed">На связи 16/7. Обработка входящих концепт-заявок происходит без задержек.</p>
+                </div>
+            </div>
+
+            <!-- Карточка 3: Нагрузка нейросети -->
+            <div class="bg-darksurface border border-borderglass p-8 rounded-3xl flex flex-col justify-between group hover:border-purple-500/30 transition-all duration-300">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-bold tracking-widest text-gray-500 uppercase">AI МОЩНОСТЬ</span>
+                    <i class="fa-solid fa-fire-flame-curved text-purple-500 text-lg"></i>
+                </div>
+                <div class="mt-12">
+                    <h4 class="font-editorial text-4xl text-white font-bold mb-2">450+ <span class="text-xs font-sans text-purple-400 font-normal tracking-normal block mt-1">ИТЕРАЦИЙ И ПРОМПТОВ ЕЖЕНЕДЕЛЬНО</span></h4>
+                    <p class="text-xs text-gray-400 leading-relaxed">Каждый пиксель проходит жесткую селекцию алгоритмами и человеческим глазом.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- НОВЫЙ ЭЛЕМЕНТ: Журнальные Цитаты/Отзывы -->
+    <section class="py-20 px-6 bg-gradient-to-b from-transparent to-darksurface/30 border-t border-borderglass relative z-10">
+        <div class="max-w-4xl mx-auto text-center">
+            <i class="fa-solid fa-quote-left text-3xl text-accentgreen/40 mb-6 block"></i>
+            <p id="testimonialText" class="font-editorial text-2xl md:text-4xl text-white italic leading-relaxed min-h-[120px] transition-opacity duration-500">
+                «Vanguard перевернул наше представление о цифровой графике. Проект сдан раньше срока, а глубина проработки AI-артов поражает воображение.»
+            </p>
+            <div class="mt-6">
+                <span id="testimonialAuthor" class="block text-sm font-bold text-white uppercase tracking-widest">Александр В.</span>
+                <span id="testimonialCompany" class="block text-xs text-accentviolet font-medium mt-1">CEO, FutureTech Corp</span>
+            </div>
+            <!-- Стрелочки переключения -->
+            <div class="flex justify-center gap-4 mt-8">
+                <button onclick="prevTestimonial()" class="w-10 h-10 border border-borderglass rounded-full flex items-center justify-center text-white text-xs hover:bg-accentviolet transition-colors"><i class="fa-solid fa-arrow-left"></i></button>
+                <button onclick="nextTestimonial()" class="w-10 h-10 border border-borderglass rounded-full flex items-center justify-center text-white text-xs hover:bg-accentviolet transition-colors"><i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+        </div>
+    </section>
+
     <!-- Секция Философии -->
     <section id="about" class="py-24 px-6 relative z-10 max-w-7xl mx-auto">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -353,6 +424,40 @@
             'ai-2': { title: 'Ethereal Future', tag: 'AI Generation', img: 'https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?q=80&w=600&auto=format&fit=crop', desc: 'Фантастические пейзажи и архитектура будущего, сгенерированные для использования в качестве обложек музыкальных альбомов.' }
         };
 
+        const testimonials = [
+            { text: '«Vanguard перевернул наше представление о цифровой графике. Проект сдан раньше срока, а глубина проработки AI-артов поражает воображение.»', author: 'Александр В.', company: 'CEO, FutureTech Corp' },
+            { text: '«Идеальное чувство бруталистского стиля и чистая адаптивная вёрстка. На мобильных устройствах сайт выглядит как дорогой глянцевый журнал.»', author: 'Елена К.', company: 'Арт-Директор, МЕDIA-X' },
+            { text: '«Математический расчет сетки и внимание к деталям — это то, что отличает Vanguard от 99% стандартных шаблонных сайтов на рынке.»', author: 'Дмитрий Ш.', company: 'Основатель, Квант Дизайн' }
+        ];
+        let currentTestimonial = 0;
+
+        // Живые часы
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('ru-RU', { hour12: false });
+            const clockEl = document.getElementById('liveClock');
+            if(clockEl) clockEl.innerText = timeString;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Функции для отзывов
+        function updateTestimonial() {
+            const textEl = document.getElementById('testimonialText');
+            const authorEl = document.getElementById('testimonialAuthor');
+            const compEl = document.getElementById('testimonialCompany');
+            
+            textEl.style.opacity = 0;
+            setTimeout(() => {
+                textEl.innerText = testimonials[currentTestimonial].text;
+                authorEl.innerText = testimonials[currentTestimonial].author;
+                compEl.innerText = testimonials[currentTestimonial].company;
+                textEl.style.opacity = 1;
+            }, 300);
+        }
+        function nextTestimonial() { currentTestimonial = (currentTestimonial + 1) % testimonials.length; updateTestimonial(); }
+        function prevTestimonial() { currentTestimonial = (currentTestimonial - 1 + testimonials.length) % testimonials.length; updateTestimonial(); }
+
         // Курсор
         const cursor = document.getElementById('customCursor');
         const cursorDot = document.getElementById('customCursorDot');
@@ -361,34 +466,31 @@
             cursorDot.style.left = e.clientX + 'px'; cursorDot.style.top = e.clientY + 'px';
         });
 
-        // Навигация
+        // Навигация и индикатор прокрутки
         window.addEventListener('scroll', () => {
             const header = document.getElementById('siteHeader');
             if (window.scrollY > 50) header.classList.add('bg-darkbg/90', 'backdrop-blur-md', 'border-borderglass', 'h-16');
             else header.classList.remove('bg-darkbg/90', 'backdrop-blur-md', 'border-borderglass', 'h-16');
+
+            // Расчет скролл-бара
+            const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('scrollProgress').style.width = scrolled + '%';
         });
 
         // Аккордеон Процесса
         function toggleProcess(element) {
             const items = document.querySelectorAll('.process-item');
             const isActive = element.classList.contains('active');
-            
-            items.forEach(item => {
-                item.classList.remove('active');
-                item.querySelector('i').classList.remove('rotate-180');
-            });
-
-            if (!isActive) {
-                element.classList.add('active');
-                element.querySelector('i').classList.add('rotate-180');
-            }
+            items.forEach(item => { item.classList.remove('active'); item.querySelector('i').classList.remove('rotate-180'); });
+            if (!isActive) { element.classList.add('active'); element.querySelector('i').classList.add('rotate-180'); }
         }
 
-        // Фильтр
+        // Фильтр порфолио
         function filterPortfolio(category) {
             const buttons = document.querySelectorAll('.portfolio-filter-btn');
             buttons.forEach(btn => btn.getAttribute('data-filter') === category ? btn.classList.add('bg-accentviolet', 'text-white') : btn.classList.remove('bg-accentviolet', 'text-white'));
-
             const cards = document.querySelectorAll('.portfolio-card');
             cards.forEach(card => {
                 if (category === 'all' || card.getAttribute('data-category') === category) {
